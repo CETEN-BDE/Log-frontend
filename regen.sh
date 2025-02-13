@@ -1,0 +1,1 @@
+openapi-generator-cli generate -i Log-backend/log.openapi.yml -g typescript-axios -o src/lib/api
