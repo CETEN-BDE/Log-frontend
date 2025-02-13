@@ -1,0 +1,3 @@
+[submodule "Log-backend"]
+	path = Log-backend
+	url = https://github.com/CETEN-BDE/Log-backend.git

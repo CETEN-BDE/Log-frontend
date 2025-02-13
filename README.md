@@ -25,7 +25,7 @@ This is an example of how to list things you need to use the software and how to
 
 1. Clone the repo
    ```sh
-   git clone https://github.com/CETEN-BDE/Log-frontend.git
+   git clone --recurse-submodules https://github.com/CETEN-BDE/Log-frontend.git
    ```
 2. Install NPM packages
    ```sh
@@ -44,6 +44,10 @@ npm run dev
 
 # or start the server and open the app in a new browser tab
 npm run dev -- --open
+```
+
+```bash
+git submodule update --remote --merge
 ```
 
 ## Building
