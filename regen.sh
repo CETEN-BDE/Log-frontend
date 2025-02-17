@@ -1,1 +1,2 @@
-openapi-generator-cli generate -i Log-backend/log.openapi.yml -g typescript-axios -o src/lib/api
+git submodule update --remote --merge
+npx openapi-typescript ./Log-backend/log.openapi.yml -o src/lib/api/log.openapi.d.ts
