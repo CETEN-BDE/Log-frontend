@@ -15,12 +15,14 @@
 
 	let people: Person[] = [];
 
+    let weekName = ['lun.', 'mar.', 'mer.', 'jeu.', 'ven.'];
+
 	let weekdayPreferences = [
-		{ day: 1, name: 'lun.', priority: 1 },
-		{ day: 2, name: 'mar.', priority: 2 },
-		{ day: 3, name: 'mer.', priority: 3 },
-		{ day: 4, name: 'jeu.', priority: 4 },
-		{ day: 5, name: 'ven.', priority: 5 }
+		{ day: 1, priority: 1 },
+		{ day: 2, priority: 2 },
+		{ day: 3, priority: 3 },
+		{ day: 4, priority: 4 },
+		{ day: 5, priority: 5 }
 	];
 
 	let draggedItem: any = null;
@@ -117,8 +119,60 @@
 		});
     }
 
+    async function postAutoFillPlanning(startDate: Date, endDate: Date) {
+        return client.POST('/planning/autofill', {
+            body: {
+                startDate: startDate.toISOString().split('T')[0],
+                endDate: endDate.toISOString().split('T')[0],
+            }
+        });
+    }
+
+    async function getWeekPriority(accountID: number) {
+        return client.GET('/planning/weekPriority/{accountID}', {
+            params: {
+                path: {
+                    accountID: accountID
+                }
+            }
+        });
+    }
+
+    async function patchWeekPriority(accountID: number, weekPriority: { day: number; priority: number }[]) {
+        return client.PATCH('/planning/weekPriority/{accountID}', {
+            params: {
+                path: {
+                    accountID: accountID
+                }
+            },
+
+            body: {
+                weekPriority
+            }
+        });
+    }
+
+    function loadWeekPriority(accountID: number) {
+        getWeekPriority(accountID).then((res) => {
+            if (res.data) {
+                weekdayPreferences = res.data.weekPriority
+                    .map((pref: { day: number; priority: number }) => ({
+                        day: pref.day,
+                        name: weekName[pref.day - 1],
+                        priority: pref.priority
+                    }))
+                    .sort((a, b) => a.priority - b.priority);
+            }
+        });
+    }
+
+    function getAccountID() {
+        return 1
+    }
+
 	onMount(() => {
 		loadPeople();
+        loadWeekPriority(getAccountID());
 	});
 
 	function getDaysInMonth(month: number, year: number) {
@@ -216,36 +270,11 @@
 			...pref,
 			priority: index + 1
 		}));
+        patchWeekPriority(getAccountID(), weekdayPreferences);
 	}
 
 	function autoFillPlanning() {
-		const newPeople = [...people];
-
-		newPeople.forEach((person) => {
-			person.schedule = {};
-			person.permissions = 0;
-		});
-
-		const allDates = weekDates.sort((a, b) => {
-			const prefA = weekdayPreferences.find((p) => p.day === a.getDay())?.priority || 0;
-			const prefB = weekdayPreferences.find((p) => p.day === b.getDay())?.priority || 0;
-			return prefA - prefB;
-		});
-
-		allDates.forEach((date) => {
-			const dateStr = date.toISOString().split('T')[0];
-
-			const eligiblePerson = newPeople
-				.filter((p) => !p.schedule[dateStr])
-				.sort((a, b) => a.permissions - b.permissions)[0];
-
-			if (eligiblePerson) {
-				eligiblePerson.schedule[dateStr] = 'selected';
-				eligiblePerson.permissions += 1;
-			}
-		});
-
-		people = newPeople;
+		postAutoFillPlanning(weekDates[0], weekDates[weekDates.length - 1])
 	}
 
 	function isStartOfWeek(date: Date): boolean {
@@ -400,7 +429,7 @@
                                    py-2 transition-colors hover:bg-indigo-100"
 						>
 							<span class="font-medium text-indigo-600">{index + 1}.</span>
-							<span class="text-gray-700">{pref.name}</span>
+							<span class="text-gray-700">{weekName[pref.day - 1]}</span>
 						</div>
 					{/each}
 				</div>

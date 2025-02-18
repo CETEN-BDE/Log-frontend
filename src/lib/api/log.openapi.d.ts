@@ -457,6 +457,163 @@ export interface paths {
         };
         trace?: never;
     };
+    "/planning/autofill": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["Autofill"];
+                };
+            };
+            responses: {
+                /** @description Note de frais created */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Message"];
+                    };
+                };
+                /** @description Invalid input */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Message"];
+                    };
+                };
+                /** @description Error 500 */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Message"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/planning/weekPriority/{accountID}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description Account ID */
+                    accountID: number;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Week priority liste */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["WeekPriority"];
+                    };
+                };
+                /** @description Invalid input */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Message"];
+                    };
+                };
+                /** @description Error 500 */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Message"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description Account ID */
+                    accountID: number;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["WeekPriority"];
+                };
+            };
+            responses: {
+                /** @description Week priority patch */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Message"];
+                    };
+                };
+                /** @description Invalid input */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Message"];
+                    };
+                };
+                /** @description Error 500 */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Message"];
+                    };
+                };
+            };
+        };
+        trace?: never;
+    };
     "/docs/noteDeFrais": {
         parameters: {
             query?: never;
@@ -1097,18 +1254,39 @@ export interface components {
         Permanence: {
             /**
              * Format: date
-             * @example 2021-03-01
+             * @example 2025-02-17
              */
             date: string;
             /** @enum {string} */
             status: "available" | "unavailable" | "selected";
+        };
+        Autofill: {
+            /**
+             * Format: date
+             * @example 2025-02-17
+             */
+            startDate: string;
+            /**
+             * Format: date
+             * @example 2025-02-17
+             */
+            endDate: string;
+        };
+        WeekPriority: {
+            weekPriority: components["schemas"]["DayPriority"][];
+        };
+        DayPriority: {
+            /** @example 1 */
+            day: number;
+            /** @example 1 */
+            priority: number;
         };
         NoteDeFrais: {
             /** @example 1 */
             userId?: number;
             /**
              * Format: date
-             * @example 2021-03-01
+             * @example 2025-02-17
              */
             date?: string;
             /** @example 12.34 */
@@ -1121,7 +1299,7 @@ export interface components {
             id?: number;
             /**
              * Format: date
-             * @example 2021-03-01
+             * @example 2025-02-17
              */
             date?: string;
             /** @example Location description */
@@ -1132,7 +1310,7 @@ export interface components {
             id?: number;
             /**
              * Format: date
-             * @example 2021-03-01
+             * @example 2025-02-17
              */
             date?: string;
             /** @example Location description */
@@ -1143,7 +1321,7 @@ export interface components {
             id?: number;
             /**
              * Format: date
-             * @example 2021-03-01
+             * @example 2025-02-17
              */
             date?: string;
             /** @example Materiel description */
